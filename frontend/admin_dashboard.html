@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      body {
+        background: linear-gradient(135deg, #232526, #414345 100%);
+        background-size: 400% 400%;
+        animation: gradientBG 18s ease infinite;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+        color: #f5f6fa;
+      }
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      header {
+        background: rgba(30, 30, 30, 0.85);
+        backdrop-filter: blur(8px) saturate(180%);
+        box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.08);
+        color: #fff;
+        padding: 18px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 0 0 24px 24px;
+        margin-bottom: 0;
+      }
+      .logout-btn {
+        background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(255, 107, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+        margin-left: 16px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .logout-btn:hover {
+        background: linear-gradient(90deg, #ff8c00 0%, #ff6b00 100%);
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 32px rgba(255, 107, 0, 0.18);
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        background: rgba(30, 30, 30, 0.92);
+        backdrop-filter: blur(16px) saturate(180%);
+        box-shadow: 2px 0 24px 0 rgba(31, 38, 135, 0.1);
+        color: #f5f6fa;
+        padding-top: 80px;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        border-radius: 0 24px 24px 0;
+        animation: slideInSidebar 1.1s;
+      }
+      @keyframes slideInSidebar {
+        from {
+          opacity: 0;
+          transform: translateX(-60px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar li {
+        padding: 18px 32px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s, padding-left 0.2s;
+        border-radius: 0 16px 16px 0;
+        margin-bottom: 2px;
+      }
+      .sidebar li:hover,
+      .sidebar li.active {
+        background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
+        color: #fff;
+        padding-left: 48px;
+      }
+      .main-content {
+        margin-left: 280px;
+        padding: 40px 40px 40px 0;
+        min-height: 100vh;
+        transition: margin-left 0.3s;
+      }
+      .content-section {
+        background: rgba(40, 40, 40, 0.92);
+        backdrop-filter: blur(12px) saturate(180%);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
+        padding: 32px 32px 24px 32px;
+        margin-bottom: 32px;
+        animation: fadeIn 1.2s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      h2,
+      h3 {
+        color: #ffb366;
+        margin-top: 0;
+        font-weight: 700;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+        background: rgba(30, 30, 30, 0.92);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+        animation: fadeIn 1.2s;
+      }
+      th,
+      td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+        font-size: 16px;
+        color: #f5f6fa;
+      }
+      th {
+        background: rgba(44, 62, 80, 0.27);
+        color: #ffb366;
+        font-weight: bold;
+      }
+      tr {
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+      tr:hover {
+        background: #232526;
+        box-shadow: 0 2px 8px rgba(44, 62, 80, 0.18);
+      }
+      .add-btn,
+      .view-btn,
+      .logout-btn,
+      button {
+        background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
+        color: white;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(255, 107, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+        margin: 4px 2px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .add-btn:hover,
+      .view-btn:hover,
+      .logout-btn:hover,
+      button:hover {
+        background: linear-gradient(90deg, #ff8c00 0%, #ff6b00 100%);
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 32px rgba(255, 107, 0, 0.18);
+      }
+      .add-btn:focus,
+      .view-btn:focus,
+      .logout-btn:focus,
+      button:focus {
+        outline: none;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        background: rgba(30, 30, 30, 0.95);
+        color: #f5f6fa;
+        font-size: 16px;
+        margin-bottom: 12px;
+        transition: box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        box-shadow: 0 4px 16px #ff6b0033;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+        background: rgba(44, 62, 80, 0.17);
+        border-radius: 8px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ff8c00;
+        border-radius: 8px;
+      }
+      @media (max-width: 900px) {
+        .sidebar {
+          width: 60px;
+          padding-top: 60px;
+        }
+        .sidebar li {
+          font-size: 0;
+          padding: 18px 12px;
+        }
+        .sidebar li:before {
+          content: "\25CF";
+          font-size: 18px;
+          color: #ff6b00;
+        }
+        .main-content {
+          margin-left: 80px;
+          padding: 24px 8px 24px 0;
+        }
+      }
+      @media (max-width: 600px) {
+        .main-content {
+          margin-left: 0;
+          padding: 12px 2px;
+        }
+        .sidebar {
+          display: none;
+        }
+        header {
+          border-radius: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2>Admin Dashboard</h2>
+      <button class="logout-btn" onclick="window.location.href='index.html'">
+        Logout
+      </button>
+    </header>
+
+    <div class="sidebar">
+      <ul>
+        <li onclick="showSection('players')">Players</li>
+        <li onclick="showSection('teams')">Teams</li>
+        <li onclick="showSection('coaches')">Coaches</li>
+        <li onclick="showSection('matches')">Matches</li>
+        <li onclick="showSection('tournaments')">Tournaments</li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <!-- Players Section -->
+      <div id="players" class="content-section active">
+        <h2>Player Management</h2>
+        <table id="playersTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Position</th>
+              <th>Team ID</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <!-- Add an Edit Player form (hidden by default) -->
+        <div id="editPlayerSection" style="display: none; margin-top: 20px">
+          <h3>Edit Player</h3>
+          <form id="editPlayerForm">
+            <input type="hidden" id="editPlayerId" />
+            <input
+              type="text"
+              id="editPlayerName"
+              placeholder="Name"
+              required
+            />
+            <input
+              type="number"
+              id="editPlayerAge"
+              placeholder="Age"
+              required
+            />
+            <input
+              type="text"
+              id="editPlayerPosition"
+              placeholder="Position"
+              required
+            />
+            <input
+              type="number"
+              id="editPlayerTeam"
+              placeholder="Team ID"
+              required
+            />
+            <button type="submit" class="add-btn">Update Player</button>
+            <button
+              type="button"
+              id="cancelEditPlayer"
+              class="add-btn"
+              style="background: #e74c3c"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+        <h3>Add Player</h3>
+        <form id="addPlayerForm">
+          <input type="text" id="name" placeholder="Name" required />
+          <input type="number" id="age" placeholder="Age" required />
+          <input type="text" id="position" placeholder="Position" required />
+          <select id="playerTeamSelect" required>
+            <option value="">Select Team</option>
+          </select>
+          <button type="submit" class="add-btn">Add Player</button>
+        </form>
+      </div>
+
+      <!-- Teams Section -->
+      <div id="teams" class="content-section">
+        <h2>Team Management</h2>
+        <table id="teamsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Coach</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <h3>Add Team</h3>
+        <form id="addTeamForm">
+          <input type="text" id="teamName" placeholder="Team Name" required />
+          <select id="coachId" required></select>
+          <button type="submit" class="add-btn">Add Team</button>
+        </form>
+      </div>
+
+      <!-- Coaches Section -->
+      <div id="coaches" class="content-section">
+        <h2>Coach Management</h2>
+        <table id="coachesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Experience</th>
+              <th>Contact Info</th>
+              <th>Specialization</th>
+              <th>Salary</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <h3>Add Coach</h3>
+        <form id="addCoachForm">
+          <input type="text" id="coachName" placeholder="Name" required />
+          <input
+            type="text"
+            id="experience"
+            placeholder="Experience"
+            required
+          />
+          <input
+            type="text"
+            id="contactInfo"
+            placeholder="Contact Info"
+            required
+          />
+          <input
+            type="text"
+            id="specialization"
+            placeholder="Specialization"
+            required
+          />
+          <input type="number" id="salary" placeholder="Salary" required />
+          <button type="submit" class="add-btn">Add Coach</button>
+        </form>
+      </div>
+
+      <!-- Matches -->
+      <div id="matches" class="content-section">
+        <h2>Match Management</h2>
+        <table id="matchesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tournament Name</th>
+              <th>Date</th>
+              <th>Team 1</th>
+              <th>Team 2</th>
+              <th>Venue</th>
+              <th>Result</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <h3>Add Match</h3>
+        <form id="addMatchForm">
+          <select id="tournamentSelect" required>
+            <option value="">Select Tournament</option>
+          </select>
+          <input type="date" id="matchDate" required />
+          <select id="team1Id" required></select>
+          <select id="team2Id" required></select>
+          <input type="text" id="venue" placeholder="Venue" required />
+          <input type="text" id="result" placeholder="Result" required />
+          <button type="submit" class="add-btn">Add Match</button>
+        </form>
+        <div id="editMatchSection" style="display: none; margin-top: 20px">
+          <h3>Edit Match</h3>
+          <form id="editMatchForm">
+            <input type="hidden" id="editMatchId" />
+            <input
+              type="number"
+              id="editTournamentId"
+              placeholder="Tournament ID"
+              required
+            />
+            <input type="date" id="editMatchDate" required />
+            <input
+              type="number"
+              id="editTeam1Id"
+              placeholder="Team 1 ID"
+              required
+            />
+            <input
+              type="number"
+              id="editTeam2Id"
+              placeholder="Team 2 ID"
+              required
+            />
+            <input type="text" id="editVenue" placeholder="Venue" required />
+            <input type="text" id="editResult" placeholder="Result" required />
+            <button type="submit" class="add-btn">Update Match</button>
+            <button
+              type="button"
+              id="cancelEditMatch"
+              class="add-btn"
+              style="background: #e74c3c"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tournaments -->
+      <div id="tournaments" class="content-section">
+        <h2>Tournament Management</h2>
+        <table id="tournamentsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Prize Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <h3>Add Tournament</h3>
+        <form id="addTournamentForm">
+          <input
+            type="text"
+            id="tournamentName"
+            placeholder="Tournament Name"
+            required
+          />
+          <input
+            type="text"
+            id="tournamentLocation"
+            placeholder="Location"
+            required
+          />
+          <input
+            type="number"
+            id="tournamentPrize"
+            placeholder="Prize Amount"
+            required
+          />
+          <button type="submit" class="add-btn">Add Tournament</button>
+        </form>
+        <div id="editTournamentSection" style="display: none; margin-top: 20px">
+          <h3>Edit Tournament</h3>
+          <form id="editTournamentForm">
+            <input type="hidden" id="editTournamentId" />
+            <input
+              type="text"
+              id="editTournamentName"
+              placeholder="Tournament Name"
+              required
+            />
+            <input
+              type="text"
+              id="editTournamentLocation"
+              placeholder="Location"
+              required
+            />
+            <input
+              type="number"
+              id="editTournamentPrize"
+              placeholder="Prize Amount"
+              required
+            />
+            <button type="submit" class="add-btn">Update Tournament</button>
+            <button
+              type="button"
+              id="cancelEditTournament"
+              class="add-btn"
+              style="background: #e74c3c"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showSection(id) {
+        document.querySelectorAll(".content-section").forEach((section) => {
+          section.classList.remove("active");
+        });
+        document.getElementById(id).classList.add("active");
+        // Smooth scroll to the section
+        document
+          .getElementById(id)
+          .scrollIntoView({ behavior: "smooth", block: "start" });
+        // Highlight active sidebar item
+        document
+          .querySelectorAll(".sidebar li")
+          .forEach((li) => li.classList.remove("active"));
+        const sidebarItems = [
+          "players",
+          "teams",
+          "coaches",
+          "matches",
+          "tournaments",
+        ];
+        const idx = sidebarItems.indexOf(id);
+        if (idx !== -1)
+          document.querySelectorAll(".sidebar li")[idx].classList.add("active");
+      }
+
+      async function loadPlayers() {
+        const res = await fetch("http://localhost:3000/api/public/players");
+        const data = await res.json();
+        const tbody = document.querySelector("#playersTable tbody");
+        tbody.innerHTML = "";
+        data.players.forEach((player) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${player.player_id}</td>
+            <td>${player.name}</td>
+            <td>${player.age}</td>
+            <td>${player.position}</td>
+            <td>${player.team_id}</td>
+            <td>
+              <button onclick="editPlayer(${player.player_id}, '${player.name}', ${player.age}, '${player.position}', ${player.team_id})">Edit</button>
+              <button onclick="deletePlayer(${player.player_id})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      window.editPlayer = function (id, name, age, position, team_id) {
+        document.getElementById("editPlayerSection").style.display = "block";
+        document.getElementById("editPlayerId").value = id;
+        document.getElementById("editPlayerName").value = name;
+        document.getElementById("editPlayerAge").value = age;
+        document.getElementById("editPlayerPosition").value = position;
+        document.getElementById("editPlayerTeam").value = team_id;
+      };
+
+      document
+        .getElementById("editPlayerForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const id = document.getElementById("editPlayerId").value;
+          const name = document.getElementById("editPlayerName").value;
+          const age = document.getElementById("editPlayerAge").value;
+          const position = document.getElementById("editPlayerPosition").value;
+          const team_id = document.getElementById("editPlayerTeam").value;
+          await fetch(`http://localhost:3000/api/admin/players/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, age, position, team_id }),
+          });
+          loadPlayers();
+          document.getElementById("editPlayerSection").style.display = "none";
+          e.target.reset();
+        });
+
+      document
+        .getElementById("cancelEditPlayer")
+        .addEventListener("click", function () {
+          document.getElementById("editPlayerSection").style.display = "none";
+          document.getElementById("editPlayerForm").reset();
+        });
+
+      window.deletePlayer = async function (id) {
+        if (confirm("Are you sure you want to delete this player?")) {
+          await fetch(`http://localhost:3000/api/admin/players/${id}`, {
+            method: "DELETE",
+          });
+          loadPlayers();
+        }
+      };
+
+      async function loadCoaches() {
+        const res = await fetch("http://localhost:3000/api/public/coaches");
+        const data = await res.json();
+        const tbody = document.querySelector("#coachesTable tbody");
+        const coachSelect = document.getElementById("coachId");
+        tbody.innerHTML = "";
+        coachSelect.innerHTML = '<option value="">Select Coach</option>';
+        data.coaches.forEach((coach) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${coach.coach_id}</td>
+            <td>${coach.name}</td>
+            <td>${coach.experience_years}</td>
+            <td>${coach.contact_info}</td>
+            <td>${coach.specialization}</td>
+            <td>${coach.salary}</td>
+          `;
+          tbody.appendChild(tr);
+          const option = document.createElement("option");
+          option.value = coach.coach_id;
+          option.text = coach.name;
+          coachSelect.appendChild(option);
+        });
+      }
+
+      async function loadTeams() {
+        const teamsRes = await fetch("http://localhost:3000/api/public/teams");
+        const teamsData = await teamsRes.json();
+        const coachesRes = await fetch(
+          "http://localhost:3000/api/public/coaches"
+        );
+        const coachesData = await coachesRes.json();
+        const coachesMap = {};
+        coachesData.coaches.forEach((coach) => {
+          coachesMap[coach.coach_id] = coach.name;
+        });
+        const tbody = document.querySelector("#teamsTable tbody");
+        tbody.innerHTML = "";
+        teamsData.teams.forEach((team) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${team.team_id}</td>
+            <td>${team.team_name}</td>
+            <td>${coachesMap[team.coach_id] || "-"}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      let teamsCache = [];
+
+      async function populateTeamDropdowns() {
+        const res = await fetch("http://localhost:3000/api/public/teams");
+        const data = await res.json();
+        teamsCache = data.teams;
+        const team1Select = document.getElementById("team1Id");
+        const team2Select = document.getElementById("team2Id");
+        team1Select.innerHTML = '<option value="">Select Team 1</option>';
+        team2Select.innerHTML = '<option value="">Select Team 2</option>';
+        data.teams.forEach((team) => {
+          const option1 = document.createElement("option");
+          option1.value = team.team_id;
+          option1.text = team.team_name;
+          team1Select.appendChild(option1);
+          const option2 = document.createElement("option");
+          option2.value = team.team_id;
+          option2.text = team.team_name;
+          team2Select.appendChild(option2);
+        });
+      }
+
+      function getTeamNameById(id) {
+        const team = teamsCache.find((t) => t.team_id == id);
+        return team ? team.team_name : id;
+      }
+
+      let tournamentsCache = [];
+
+      async function loadTournamentsCache() {
+        const res = await fetch("http://localhost:3000/api/public/tournaments");
+        const data = await res.json();
+        tournamentsCache = data.tournaments;
+      }
+
+      function getTournamentNameById(id) {
+        const t = tournamentsCache.find(
+          (t) => String(t.tournament_id) === String(id)
+        );
+        return t ? t.tournament_name : id;
+      }
+
+      async function loadMatches() {
+        // First load tournaments cache if not already loaded
+        if (tournamentsCache.length === 0) {
+          await loadTournamentsCache();
+        }
+
+        const res = await fetch("http://localhost:3000/api/public/matches");
+        const data = await res.json();
+        const tbody = document.querySelector("#matchesTable tbody");
+        tbody.innerHTML = "";
+        data.matches.forEach((match) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${match.match_id}</td>
+            <td>${getTournamentNameById(
+              match.tournament_id
+            )}</td>  <!-- Now shows name instead of ID -->
+            <td>${match.match_date ? match.match_date.split("T")[0] : ""}</td>
+            <td>${getTeamNameById(match.team1_id)}</td>
+            <td>${getTeamNameById(match.team2_id)}</td>
+            <td>${match.venue}</td>
+            <td>${match.result}</td>
+            <td>
+              <button onclick="editMatch(${match.match_id}, ${
+            match.tournament_id
+          }, '${match.match_date ? match.match_date.split("T")[0] : ""}', ${
+            match.team1_id
+          }, ${match.team2_id}, '${match.venue.replace(
+            /'/g,
+            "&#39;"
+          )}', '${match.result.replace(/'/g, "&#39;")}' )">Edit</button>
+              <button onclick="deleteMatch(${match.match_id})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function populateTournamentDropdown() {
+        const res = await fetch("http://localhost:3000/api/public/tournaments");
+        const data = await res.json();
+        const select = document.getElementById("tournamentSelect");
+        select.innerHTML = '<option value="">Select Tournament</option>';
+        data.tournaments.forEach((tournament) => {
+          const option = document.createElement("option");
+          option.value = tournament.tournament_id;
+          option.text = tournament.tournament_name || tournament.name;
+          select.appendChild(option);
+        });
+      }
+
+      document
+        .getElementById("addMatchForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const tournament_id =
+            document.getElementById("tournamentSelect").value;
+          const match_date = document.getElementById("matchDate").value;
+          const team1_id = document.getElementById("team1Id").value;
+          const team2_id = document.getElementById("team2Id").value;
+          const venue = document.getElementById("venue").value;
+          const result = document.getElementById("result").value;
+          await fetch("http://localhost:3000/api/admin/matches", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tournament_id,
+              match_date,
+              team1_id,
+              team2_id,
+              venue,
+              result,
+            }),
+          });
+          loadMatches();
+          e.target.reset();
+        });
+
+      window.editMatch = function (
+        id,
+        tournament_id,
+        match_date,
+        team1_id,
+        team2_id,
+        venue,
+        result
+      ) {
+        document.getElementById("editMatchSection").style.display = "block";
+        document.getElementById("editMatchId").value = id;
+        document.getElementById("editTournamentId").value = tournament_id;
+        document.getElementById("editMatchDate").value = match_date;
+        document.getElementById("editTeam1Id").value = team1_id;
+        document.getElementById("editTeam2Id").value = team2_id;
+        document.getElementById("editVenue").value = venue;
+        document.getElementById("editResult").value = result;
+      };
+
+      document
+        .getElementById("editMatchForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const id = document.getElementById("editMatchId").value;
+          const tournament_id =
+            document.getElementById("editTournamentId").value;
+          const match_date = document.getElementById("editMatchDate").value;
+          const team1_id = document.getElementById("editTeam1Id").value;
+          const team2_id = document.getElementById("editTeam2Id").value;
+          const venue = document.getElementById("editVenue").value;
+          const result = document.getElementById("editResult").value;
+          await fetch(`http://localhost:3000/api/admin/matches/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tournament_id,
+              match_date,
+              team1_id,
+              team2_id,
+              venue,
+              result,
+            }),
+          });
+          loadMatches();
+          document.getElementById("editMatchSection").style.display = "none";
+          e.target.reset();
+        });
+
+      document
+        .getElementById("cancelEditMatch")
+        .addEventListener("click", function () {
+          document.getElementById("editMatchSection").style.display = "none";
+          document.getElementById("editMatchForm").reset();
+        });
+
+      window.deleteMatch = async function (id) {
+        if (confirm("Are you sure you want to delete this match?")) {
+          await fetch(`http://localhost:3000/api/admin/matches/${id}`, {
+            method: "DELETE",
+          });
+          loadMatches();
+        }
+      };
+
+      async function loadTournaments() {
+        const res = await fetch("http://localhost:3000/api/admin/tournaments");
+        const data = await res.json();
+        const tbody = document.querySelector("#tournamentsTable tbody");
+        tbody.innerHTML = "";
+        data.tournaments.forEach((t) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${t.tournament_id}</td>
+            <td>${t.tournament_name}</td>
+            <td>${t.location}</td>
+            <td>${t.prize_amount}</td>
+            <td>
+              <button onclick="editTournament(${
+                t.tournament_id
+              }, '${t.tournament_name.replace(
+            /'/g,
+            "&#39;"
+          )}', '${t.location.replace(/'/g, "&#39;")}', ${
+            t.prize_amount
+          })">Edit</button>
+              <button onclick="deleteTournament(${
+                t.tournament_id
+              })">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document
+        .getElementById("addTournamentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const tournament_name =
+            document.getElementById("tournamentName").value;
+          const location = document.getElementById("tournamentLocation").value;
+          const prize_amount = document.getElementById("tournamentPrize").value;
+          await fetch("http://localhost:3000/api/admin/tournaments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tournament_name, location, prize_amount }),
+          });
+          loadTournaments();
+          e.target.reset();
+        });
+
+      window.editTournament = function (id, name, location, prize) {
+        document.getElementById("editTournamentSection").style.display =
+          "block";
+        document.getElementById("editTournamentId").value = id;
+        document.getElementById("editTournamentName").value = name;
+        document.getElementById("editTournamentLocation").value = location;
+        document.getElementById("editTournamentPrize").value = prize;
+      };
+
+      document
+        .getElementById("editTournamentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const id = document.getElementById("editTournamentId").value;
+          const tournament_name =
+            document.getElementById("editTournamentName").value;
+          const location = document.getElementById(
+            "editTournamentLocation"
+          ).value;
+          const prize_amount = document.getElementById(
+            "editTournamentPrize"
+          ).value;
+          await fetch(`http://localhost:3000/api/admin/tournaments/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tournament_name, location, prize_amount }),
+          });
+          loadTournaments();
+          document.getElementById("editTournamentSection").style.display =
+            "none";
+          e.target.reset();
+        });
+
+      document
+        .getElementById("cancelEditTournament")
+        .addEventListener("click", function () {
+          document.getElementById("editTournamentSection").style.display =
+            "none";
+          document.getElementById("editTournamentForm").reset();
+        });
+
+      window.deleteTournament = async function (id) {
+        if (confirm("Are you sure you want to delete this tournament?")) {
+          await fetch(`http://localhost:3000/api/admin/tournaments/${id}`, {
+            method: "DELETE",
+          });
+          loadTournaments();
+        }
+      };
+
+      async function populatePlayerTeamDropdown() {
+        const res = await fetch("http://localhost:3000/api/admin/teams");
+        const data = await res.json();
+        const select = document.getElementById("playerTeamSelect");
+        select.innerHTML = '<option value="">Select Team</option>';
+        data.teams.forEach((team) => {
+          const option = document.createElement("option");
+          option.value = team.team_id;
+          option.text = team.team_name;
+          select.appendChild(option);
+        });
+      }
+
+      const addPlayerForm = document.getElementById("addPlayerForm");
+      addPlayerForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const age = document.getElementById("age").value;
+        const position = document.getElementById("position").value;
+        const team_id = document.getElementById("playerTeamSelect").value;
+        await fetch("http://localhost:3000/api/admin/players", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, age, position, team_id }),
+        });
+        loadPlayers();
+        addPlayerForm.reset();
+      });
+
+      document
+        .getElementById("addCoachForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("coachName").value;
+          const experience = document.getElementById("experience").value;
+          const contact_info = document.getElementById("contactInfo").value;
+          const specialization =
+            document.getElementById("specialization").value;
+          const salary = document.getElementById("salary").value;
+          await fetch("http://localhost:3000/api/admin/coaches", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              experience_years: experience,
+              contact_info,
+              specialization,
+              salary,
+            }),
+          });
+          loadCoaches();
+          e.target.reset();
+        });
+
+      document
+        .getElementById("addTeamForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const team_name = document.getElementById("teamName").value;
+          const coach_id = document.getElementById("coachId").value;
+          await fetch("http://localhost:3000/api/admin/teams", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ team_name, coach_id }),
+          });
+          loadTeams();
+          e.target.reset();
+        });
+
+      // Load all data on page load
+      window.onload = async function () {
+        await loadTournamentsCache(); // Load tournaments cache first
+        loadPlayers();
+        loadCoaches();
+        await populateTeamDropdowns();
+        loadTeams();
+        loadMatches();
+        loadTournaments();
+        await populatePlayerTeamDropdown();
+        await populateTournamentDropdown();
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Login</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Inter:wght@400;600&display=swap");
+      body {
+        font-family: "Inter", "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #181c2b 0%,
+          #232526 50%,
+          #0f2027 100%
+        );
+        background-size: 400% 400%;
+        animation: gradientBG 18s ease infinite;
+        color: #f5f6fa;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .login-container {
+        background: rgba(30, 30, 40, 0.92);
+        backdrop-filter: blur(18px) saturate(180%);
+        border-radius: 24px;
+        box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.25);
+        padding: 48px 40px 36px 40px;
+        width: 400px;
+        animation: fadeIn 1.2s cubic-bezier(0.77, 0, 0.18, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(40px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      h2 {
+        font-family: "Montserrat", "Inter", sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #ffb366;
+        margin-bottom: 32px;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 12px #000a;
+        animation: slideDown 1s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .form-group {
+        margin-bottom: 28px;
+        position: relative;
+        width: 100%;
+      }
+      label {
+        position: absolute;
+        left: 18px;
+        top: 16px;
+        color: #aaa;
+        font-size: 1rem;
+        pointer-events: none;
+        transition: 0.2s;
+        font-family: 'Inter', sans-serif;
+        background: transparent;
+        letter-spacing: 0.5px;
+      }
+      input:focus + label,
+      input:not(:placeholder-shown) + label {
+        top: -14px;
+        left: 12px;
+        font-size: 0.85rem;
+        color: #ffb366;
+        background: #232526;
+        padding: 0 6px;
+        border-radius: 4px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      input {
+        width: 100%;
+        padding: 18px 18px 18px 18px;
+        border-radius: 12px;
+        border: none;
+        background: rgba(40, 40, 50, 0.98);
+        color: #f5f6fa;
+        font-size: 1.08rem;
+        margin-bottom: 4px;
+        transition: box-shadow 0.2s, border 0.2s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        font-family: 'Inter', sans-serif;
+        outline: none;
+      }
+      input:focus {
+        border: 1.5px solid #ffb366;
+        box-shadow: 0 4px 24px #ff33;
+      }
+      .btn {
+        background: linear-gradient(90deg, #ff6b00 0%, #ff8c00 100%);
+        color: white;
+        border: none;
+        padding: 16px;
+        width: 100%;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.15rem;
+        font-family: "Montserrat", "Inter", sans-serif;
+        font-weight: 700;
+        box-shadow: 0 4px 24px rgba(255, 107, 0, 0.18);
+        transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+        position: relative;
+        overflow: hidden;
+        margin-top: 10px;
+        letter-spacing: 1px;
+      }
+      .btn::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 100%;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+        z-index: 0;
+      }
+      .btn:active::after {
+        width: 220px;
+        height: 220px;
+      }
+      .btn:hover {
+        background: linear-gradient(90deg, #ff8c00 0%, #ff6b00 100%);
+        transform: translateY(-2px) scale(1.03);
+        box-shadow: 0 8px 32px rgba(255, 107, 0, 0.25);
+      }
+      .btn:focus {
+        outline: none;
+      }
+      .error {
+        color: #ff4444;
+        text-align: center;
+        margin-top: 14px;
+        font-family: "Inter", sans-serif;
+        font-size: 1.05rem;
+        letter-spacing: 0.5px;
+        animation: fadeIn 0.7s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Admin Login</h2>
+      <form id="loginForm" onsubmit="return validateLogin()">
+        <div class="form-group">
+          <input type="text" id="username" placeholder=" " required />
+          <label for="username">Username</label>
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" placeholder=" " required />
+          <label for="password">Password</label>
+        </div>
+        <button type="submit" class="btn">Login</button>
+        <div id="errorMessage" class="error"></div>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          const response = await fetch(
+            "http://localhost:3000/api/admin/login",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ username, password }),
+            }
+          );
+
+          const data = await response.json();
+          if (data.success) {
+            window.location.href = "admin_dashboard.html";
+          } else {
+            document.getElementById("errorMessage").innerText =
+              "Invalid username or password.";
+          }
+        });
+    </script>
+  </body>
+</html>
